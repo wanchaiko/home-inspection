@@ -7,195 +7,69 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
   <style>
     :root{
-      --bg:#f4f1ec;
-      --card:#fffaf3;
-      --ink:#171717;
-      --muted:#77706a;
-      --line:#e2d8cc;
-      --gold:#b88746;
-      --gold2:#d8b06d;
-      --dark:#1f1a17;
-      --danger:#b91c1c;
-      --radius:22px;
-      --shadow:0 18px 45px rgba(51,38,23,.13);
+      --bg:#f4f1ec; --card:#fffaf3; --ink:#171717; --muted:#77706a;
+      --line:#e2d8cc; --gold:#b88746; --gold2:#d8b06d;
+      --dark:#1f1a17; --danger:#b91c1c; --shadow:0 18px 45px rgba(51,38,23,.13);
     }
     *{box-sizing:border-box}
     html,body{margin:0;min-height:100%;font-family:"Sarabun",system-ui,sans-serif;background:
       radial-gradient(circle at top left,rgba(216,176,109,.28),transparent 32%),
-      linear-gradient(180deg,#fff8ec 0%,var(--bg) 45%,#efe8df 100%);
-      color:var(--ink);
-    }
+      linear-gradient(180deg,#fff8ec 0%,var(--bg) 45%,#efe8df 100%);color:var(--ink)}
     body{padding-bottom:154px}
-    .app{
-      max-width:520px;
-      margin:0 auto;
-      padding:18px 14px calc(32px + env(safe-area-inset-bottom));
-    }
-    .hero{
-      position:sticky;
-      top:0;
-      z-index:5;
-      margin:0 -14px 14px;
-      padding:14px 14px 12px;
-      background:rgba(255,248,236,.88);
-      backdrop-filter:blur(18px);
-      border-bottom:1px solid rgba(226,216,204,.7);
-    }
-    .hero-card{
-      border-radius:26px;
-      padding:18px;
-      background:linear-gradient(135deg,#201916,#3a2a1c 58%,#8d6737);
-      color:#fff;
-      box-shadow:var(--shadow);
-      overflow:hidden;
-      position:relative;
-    }
-    .hero-card:after{
-      content:"";
-      position:absolute;
-      width:180px;height:180px;border-radius:50%;
-      right:-70px;top:-75px;
-      background:rgba(216,176,109,.24);
-    }
+    .app{max-width:520px;margin:0 auto;padding:18px 14px calc(32px + env(safe-area-inset-bottom))}
+    .hero{position:sticky;top:0;z-index:5;margin:0 -14px 14px;padding:14px 14px 12px;background:rgba(255,248,236,.88);backdrop-filter:blur(18px);border-bottom:1px solid rgba(226,216,204,.7)}
+    .hero-card{border-radius:26px;padding:18px;background:linear-gradient(135deg,#201916,#3a2a1c 58%,#8d6737);color:#fff;box-shadow:var(--shadow);overflow:hidden;position:relative}
+    .hero-card:after{content:"";position:absolute;width:180px;height:180px;border-radius:50%;right:-70px;top:-75px;background:rgba(216,176,109,.24)}
     .eyebrow{font-size:12px;letter-spacing:.08em;opacity:.78;font-weight:700}
     h1{margin:4px 0 8px;font-size:27px;line-height:1.12}
     .summary{display:flex;gap:10px;align-items:center;color:#f7ead7;font-size:14px;flex-wrap:wrap}
-    .pill{
-      display:inline-flex;gap:6px;align-items:center;
-      padding:7px 10px;border-radius:999px;background:rgba(255,255,255,.12);
-      border:1px solid rgba(255,255,255,.18);font-weight:700
-    }
-    .panel{
-      background:rgba(255,250,243,.92);
-      border:1px solid rgba(226,216,204,.92);
-      border-radius:var(--radius);
-      padding:16px;
-      box-shadow:var(--shadow);
-      margin-bottom:14px;
-    }
+    .pill{display:inline-flex;gap:6px;align-items:center;padding:7px 10px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);font-weight:700}
+    .panel{background:rgba(255,250,243,.92);border:1px solid rgba(226,216,204,.92);border-radius:22px;padding:16px;box-shadow:var(--shadow);margin-bottom:14px}
     .section-title{font-size:17px;font-weight:800;margin:0 0 12px;display:flex;align-items:center;gap:8px}
     .field{margin-bottom:12px}
     label{display:block;font-size:13px;font-weight:800;color:#473c31;margin:0 0 7px}
-    input[type="text"]{
-      width:100%;height:48px;border:1px solid var(--line);
-      border-radius:15px;background:#fff;padding:0 14px;font:inherit;
-      outline:none;box-shadow:0 4px 12px rgba(55,42,28,.04);
-    }
+    input[type="text"]{width:100%;height:48px;border:1px solid var(--line);border-radius:15px;background:#fff;padding:0 14px;font:inherit;outline:none;box-shadow:0 4px 12px rgba(55,42,28,.04)}
     input[type="text"]:focus{border-color:var(--gold);box-shadow:0 0 0 4px rgba(184,135,70,.14)}
-    .photo-box{
-      border:1.5px dashed #c9ab7b;
-      background:linear-gradient(180deg,#fffdf9,#fff6e6);
-      border-radius:18px;
-      padding:14px;
-      text-align:center;
-      position:relative;
-      overflow:hidden;
-    }
-    .photo-box input{
-      position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;
-    }
-    .camera-icon{
-      width:48px;height:48px;border-radius:16px;margin:0 auto 8px;
-      display:grid;place-items:center;
-      background:linear-gradient(135deg,var(--gold),var(--gold2));
-      color:#fff;font-size:24px;box-shadow:0 12px 22px rgba(184,135,70,.25)
-    }
+    .photo-box{border:1.5px dashed #c9ab7b;background:linear-gradient(180deg,#fffdf9,#fff6e6);border-radius:18px;padding:14px;text-align:center;position:relative;overflow:hidden}
+    .photo-box input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+    .camera-icon{width:48px;height:48px;border-radius:16px;margin:0 auto 8px;display:grid;place-items:center;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#fff;font-size:24px;box-shadow:0 12px 22px rgba(184,135,70,.25)}
     .photo-main{font-weight:800;font-size:16px}
     .photo-sub{font-size:13px;color:var(--muted);margin-top:2px}
-    .preview{
-      margin-top:10px;border-radius:16px;overflow:hidden;display:none;border:1px solid var(--line)
-    }
+    .preview{margin-top:10px;border-radius:16px;overflow:hidden;display:none;border:1px solid var(--line)}
     .preview img{width:100%;max-height:230px;object-fit:cover;display:block}
     .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    .actions{display:grid;grid-template-columns:1fr;gap:10px;margin-top:10px}
-    button{
-      border:0;border-radius:16px;height:50px;padding:0 16px;
-      font:inherit;font-weight:800;cursor:pointer;
-      display:flex;align-items:center;justify-content:center;gap:8px;
-      -webkit-tap-highlight-color:transparent;
-    }
-    button:disabled{opacity:.55;cursor:not-allowed}
-    .primary{
-      color:#fff;background:linear-gradient(135deg,#1f1a17,#3b2a20);
-      box-shadow:0 14px 24px rgba(31,26,23,.20);
-    }
-    .export{
-      color:#21150a;background:linear-gradient(135deg,#e6c27f,#b88746);
-      box-shadow:0 14px 24px rgba(184,135,70,.23);
-    }
-    .share{
-      color:#fff;background:linear-gradient(135deg,#06c755,#079d45);
-      box-shadow:0 14px 24px rgba(6,199,85,.20);
-    }
+    button{border:0;border-radius:16px;height:50px;padding:0 16px;font:inherit;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;-webkit-tap-highlight-color:transparent}
+    .primary{color:#fff;background:linear-gradient(135deg,#1f1a17,#3b2a20);box-shadow:0 14px 24px rgba(31,26,23,.20)}
+    .export{color:#21150a;background:linear-gradient(135deg,#e6c27f,#b88746);box-shadow:0 14px 24px rgba(184,135,70,.23)}
+    .share{color:#fff;background:linear-gradient(135deg,#06c755,#079d45);box-shadow:0 14px 24px rgba(6,199,85,.20)}
     .ghost{background:#fff;border:1px solid var(--line);color:#3b3129}
     .danger{background:#fff3f3;color:var(--danger);border:1px solid #f0caca}
-    .note{
-      margin-top:10px;font-size:13px;color:var(--muted);
-      background:#fffdf8;border:1px solid var(--line);padding:10px;border-radius:14px;
-    }
+    .note{margin-top:10px;font-size:13px;color:var(--muted);background:#fffdf8;border:1px solid var(--line);padding:10px;border-radius:14px}
     .list{display:grid;gap:12px}
-    .empty{
-      text-align:center;color:var(--muted);padding:26px 8px;border:1px dashed var(--line);
-      border-radius:18px;background:#fffdf8
-    }
-    .ticket{
-      background:#fff;
-      border:1px solid var(--line);
-      border-radius:20px;
-      box-shadow:0 12px 30px rgba(51,38,23,.08);
-      overflow:hidden;
-    }
+    .empty{text-align:center;color:var(--muted);padding:26px 8px;border:1px dashed var(--line);border-radius:18px;background:#fffdf8}
+    .ticket{background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:0 12px 30px rgba(51,38,23,.08);overflow:hidden}
     .ticket-img{height:210px;background:#eee;position:relative}
     .ticket-img img{width:100%;height:100%;object-fit:cover;display:block}
-    .badge{
-      position:absolute;left:12px;top:12px;background:rgba(31,26,23,.88);
-      color:#fff;border-radius:999px;padding:6px 11px;font-weight:800;font-size:13px
-    }
+    .badge{position:absolute;left:12px;top:12px;background:rgba(31,26,23,.88);color:#fff;border-radius:999px;padding:6px 11px;font-weight:800;font-size:13px}
     .ticket-body{padding:14px}
     .meta{display:grid;gap:8px}
     .meta-row{display:grid;grid-template-columns:74px 1fr;gap:8px;font-size:14px}
     .meta-row b{color:#6b5740}
-    .status{
-      margin-top:12px;padding:10px 12px;border-radius:14px;
-      background:#fff8ea;border:1px solid #ecd6a9;
-      display:flex;align-items:center;gap:9px;font-weight:800;color:#4b3720
-    }
-    .box-icon{
-      width:18px;height:18px;border:2px solid #1f1a17;border-radius:4px;display:inline-block;background:#fff
-    }
+    .status{margin-top:12px;padding:10px 12px;border-radius:14px;background:#fff8ea;border:1px solid #ecd6a9;display:flex;align-items:center;gap:9px;font-weight:800;color:#4b3720}
+    .box-icon{width:18px;height:18px;border:2px solid #1f1a17;border-radius:4px;display:inline-block;background:#fff}
     .item-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
-    .bottom-bar{
-      position:fixed;left:0;right:0;bottom:0;z-index:10;
-      padding:10px 14px calc(10px + env(safe-area-inset-bottom));
-      background:rgba(255,248,236,.92);
-      backdrop-filter:blur(18px);
-      border-top:1px solid rgba(226,216,204,.85);
-    }
+    .bottom-bar{position:fixed;left:0;right:0;bottom:0;z-index:10;padding:10px 14px calc(10px + env(safe-area-inset-bottom));background:rgba(255,248,236,.92);backdrop-filter:blur(18px);border-top:1px solid rgba(226,216,204,.85)}
     .bottom-inner{max-width:520px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:10px}
     .bottom-inner .share{grid-column:1 / -1}
     .small{height:46px}
-    #busy{
-      position:fixed;inset:0;background:rgba(31,26,23,.55);
-      z-index:99;display:none;align-items:center;justify-content:center;
-      color:#fff;font-weight:800;text-align:center;padding:24px;
-      backdrop-filter:blur(8px);
-    }
+    #busy{position:fixed;inset:0;background:rgba(31,26,23,.55);z-index:99;display:none;align-items:center;justify-content:center;color:#fff;font-weight:800;text-align:center;padding:24px;backdrop-filter:blur(8px)}
     .busy-card{background:rgba(31,26,23,.9);padding:22px;border-radius:20px;max-width:320px}
-
-    .pdf-page{
-      width:210mm;min-height:297mm;background:#fff;color:#000;padding:8mm;
-      position:absolute;left:-99999px;top:0;font-family:"Sarabun",sans-serif;
-    }
-    .pdf-header{
-      border:1.5px solid #111;display:grid;grid-template-columns:1fr 1.2fr;
-      height:24mm;margin-bottom:7mm;
-    }
+    .pdf-page{width:210mm;min-height:297mm;background:#fff;color:#000;padding:8mm;position:absolute;left:-99999px;top:0;font-family:"Sarabun",sans-serif}
+    .pdf-header{border:1.5px solid #111;display:grid;grid-template-columns:1fr 1.2fr;height:24mm;margin-bottom:7mm}
     .pdf-logo{display:flex;align-items:center;justify-content:center;border-right:1.5px solid #111;font-size:18px;font-weight:900;letter-spacing:2px}
     .pdf-meta{display:grid;grid-template-rows:1fr 1fr}
     .pdf-meta div{padding:4mm;border-bottom:1px solid #111;font-weight:800}
@@ -269,10 +143,8 @@
         <input id="detail" type="text" placeholder="เช่น มุมผนังเบี้ยว ไม่ได้ฉาก">
       </div>
 
-      <div class="actions">
-        <button class="primary" onclick="addItem()">เพิ่มรายการ</button>
-      </div>
-      <div class="note">หมายเหตุ: สถานะ “ดำเนินการแก้ไขแล้ว” จะแสดงเป็นช่องว่าง ไม่ติ๊กถูก ทั้งบนหน้าจอและ PDF</div>
+      <button class="primary" id="addBtn" onclick="addItem()">เพิ่มรายการ</button>
+      <div class="note">แก้บัคแล้ว: เพิ่มรายการที่ 2, 3, 4 ได้ต่อเนื่อง และช่อง checkbox เป็นช่องว่างเสมอ</div>
     </section>
 
     <section class="panel">
@@ -290,10 +162,17 @@
   </div>
 
 <script>
-  const items = JSON.parse(localStorage.getItem("homeInspectionItems") || "[]");
+  let items = [];
   let editIndex = -1;
+  let currentImageData = "";
 
   const $ = id => document.getElementById(id);
+
+  try {
+    items = JSON.parse(localStorage.getItem("homeInspectionItems") || "[]");
+  } catch(e) {
+    items = [];
+  }
 
   $("project").value = localStorage.getItem("homeInspectionProject") || "";
   $("houseNo").value = localStorage.getItem("homeInspectionHouseNo") || "";
@@ -305,27 +184,45 @@
     });
   });
 
-  function save(){ localStorage.setItem("homeInspectionItems", JSON.stringify(items)); }
+  function save(){
+    try{
+      localStorage.setItem("homeInspectionItems", JSON.stringify(items));
+    }catch(e){
+      alert("พื้นที่บันทึกรูปในเครื่องเต็ม กรุณาลบรายการเก่าบางส่วน หรือลดจำนวนรูป");
+    }
+  }
 
-  function readFileAsDataURL(file){
+  function compressImage(file, maxWidth = 1400, quality = 0.82){
     return new Promise((resolve,reject)=>{
       const reader = new FileReader();
-      reader.onload = e => resolve(e.target.result);
+      reader.onload = e => {
+        const img = new Image();
+        img.onload = () => {
+          const scale = Math.min(1, maxWidth / img.width);
+          const canvas = document.createElement("canvas");
+          canvas.width = Math.round(img.width * scale);
+          canvas.height = Math.round(img.height * scale);
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          resolve(canvas.toDataURL("image/jpeg", quality));
+        };
+        img.onerror = reject;
+        img.src = e.target.result;
+      };
       reader.onerror = reject;
       reader.readAsDataURL(file);
     });
   }
 
   async function showPreview(event){
-    const file = event.target.files[0];
+    const file = event.target.files && event.target.files[0];
     if(!file) return;
-    const image = await readFileAsDataURL(file);
-    $("previewImg").src = image;
+    currentImageData = await compressImage(file);
+    $("previewImg").src = currentImageData;
     $("preview").style.display = "block";
   }
 
   async function addItem(){
-    const file = $("photo").files[0];
     const area = $("area").value.trim();
     const work = $("work").value.trim();
     const detail = $("detail").value.trim();
@@ -335,20 +232,22 @@
       return;
     }
 
-    let image = $("previewImg").src || "";
-    if(file) image = await readFileAsDataURL(file);
-
-    if(editIndex < 0 && !image){
+    if(editIndex < 0 && !currentImageData){
       alert("กรุณาแนบรูปหรือถ่ายรูปก่อนเพิ่มรายการ");
       return;
     }
 
-    const data = { image, area, work, detail };
+    const data = {
+      image: currentImageData || (editIndex >= 0 ? items[editIndex].image : ""),
+      area,
+      work,
+      detail
+    };
+
     if(editIndex >= 0){
-      if(!image) data.image = items[editIndex].image;
       items[editIndex] = data;
       editIndex = -1;
-      document.querySelector(".primary").textContent = "เพิ่มรายการ";
+      $("addBtn").textContent = "เพิ่มรายการ";
     }else{
       items.push(data);
     }
@@ -363,8 +262,9 @@
     $("area").value = "";
     $("work").value = "";
     $("detail").value = "";
-    $("previewImg").removeAttribute("src");
+    $("previewImg").src = "";
     $("preview").style.display = "none";
+    currentImageData = "";
   }
 
   function renderList(){
@@ -399,12 +299,13 @@
   function editItem(i){
     const item = items[i];
     editIndex = i;
+    currentImageData = item.image;
     $("area").value = item.area;
     $("work").value = item.work;
     $("detail").value = item.detail;
     $("previewImg").src = item.image;
     $("preview").style.display = "block";
-    document.querySelector(".primary").textContent = "บันทึกการแก้ไข";
+    $("addBtn").textContent = "บันทึกการแก้ไข";
     window.scrollTo({top:0,behavior:"smooth"});
   }
 
@@ -417,8 +318,9 @@
 
   function clearAll(){
     if(!confirm("ต้องการล้างข้อมูลทั้งหมดใช่หรือไม่?")) return;
-    items.length = 0;
+    items = [];
     save();
+    resetForm();
     renderList();
   }
 
@@ -478,20 +380,17 @@
             ${pages[p].map((item,i)=>pdfBlock(item,p*6+i)).join("")}
           </div>`;
         document.body.appendChild(page);
-
         await new Promise(resolve => setTimeout(resolve, 80));
 
         const canvas = await html2canvas(page,{
-          scale:1.8,
+          scale:1.65,
           useCORS:true,
           allowTaint:true,
           backgroundColor:"#ffffff",
-          logging:false,
-          windowWidth:page.scrollWidth,
-          windowHeight:page.scrollHeight
+          logging:false
         });
 
-        const img = canvas.toDataURL("image/jpeg",0.92);
+        const img = canvas.toDataURL("image/jpeg",0.9);
         if(p>0) pdf.addPage();
         pdf.addImage(img,"JPEG",0,0,210,297);
         document.body.removeChild(page);
@@ -515,45 +414,27 @@
   async function exportPDF(){
     const blob = await makePDFBlob();
     if(!blob) return;
-
-    const fileName = safeFileName();
-
-    const file = new File([blob], fileName, { type:"application/pdf" });
+    const file = new File([blob], safeFileName(), { type:"application/pdf" });
 
     if(navigator.canShare && navigator.canShare({ files:[file] })){
-      await navigator.share({
-        files:[file],
-        title:"Home Inspection PDF",
-        text:"รายงานตรวจบ้าน"
-      });
+      await navigator.share({ files:[file], title:"Home Inspection PDF", text:"รายงานตรวจบ้าน" });
       return;
     }
 
     const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = fileName;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-
+    window.open(url, "_blank");
     setTimeout(()=>URL.revokeObjectURL(url), 30000);
   }
 
   async function sharePDF(){
     const blob = await makePDFBlob();
     if(!blob) return;
-
     const file = new File([blob], safeFileName(), { type:"application/pdf" });
 
     if(navigator.canShare && navigator.canShare({ files:[file] })){
-      await navigator.share({
-        files:[file],
-        title:"Home Inspection PDF",
-        text:"รายงานตรวจบ้าน"
-      });
+      await navigator.share({ files:[file], title:"Home Inspection PDF", text:"รายงานตรวจบ้าน" });
     }else{
-      alert("เครื่องนี้ไม่รองรับการแชร์ไฟล์โดยตรง ให้กด Export PDF แล้วเลือกเปิด/แชร์จากไฟล์แทน");
+      alert("เครื่องนี้ไม่รองรับการแชร์ไฟล์โดยตรง ให้กด Export PDF แล้วแชร์จากหน้าไฟล์แทน");
       const url = URL.createObjectURL(blob);
       window.open(url, "_blank");
       setTimeout(()=>URL.revokeObjectURL(url), 30000);
