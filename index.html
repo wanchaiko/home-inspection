@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ฟอร์มบันทึกรายการตรวจ</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Sarabun", system-ui, sans-serif;
+      background: #f5f6f8;
+      color: #111;
+    }
+    .wrap {
+      max-width: 1100px;
+      margin: 24px auto;
+      padding: 0 16px 40px;
+    }
+    .card {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      padding: 18px;
+      box-shadow: 0 4px 18px rgba(0,0,0,.06);
+      margin-bottom: 16px;
+    }
+    h1 { margin: 0 0 14px; font-size: 24px; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+    label { display: block; font-weight: 600; margin-bottom: 6px; }
+    input[type="text"], input[type="file"] {
+      width: 100%;
+      border: 1px solid #cfd4dc;
+      border-radius: 8px;
+      padding: 10px 12px;
+      font: inherit;
+      background: #fff;
+    }
+    .btns {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+    button {
+      border: 0;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      background: #111827;
+      color: #fff;
+    }
+    button.secondary { background: #2563eb; }
+    button.danger { background: #dc2626; }
+    .hint { color: #666; font-size: 14px; margin-top: 8px; }
+
+    #list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .item-card {
+      border: 1px solid #222;
+      background: #fff;
+      display: grid;
+      grid-template-columns: 48px 1fr;
+      min-height: 260px;
+    }
+    .item-no {
+      border-right: 1px solid #222;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+    }
+    .item-content img {
+      width: 100%;
+      height: 155px;
+      object-fit: cover;
+      display: block;
+      border-bottom: 1px solid #222;
+      background: #eee;
+    }
+    .row {
+      display: grid;
+      grid-template-columns: 92px 1fr;
+      border-bottom: 1px solid #222;
+      min-height: 32px;
+      align-items: stretch;
+    }
+    .row:last-child { border-bottom: 0; }
+    .row .th {
+      border-right: 1px solid #222;
+      padding: 5px 8px;
+      font-weight: 700;
+    }
+    .row .td {
+      padding: 5px 8px;
+      text-align: center;
+      font-weight: 600;
+    }
+    .fix-line {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      justify-content: center;
+    }
+    .check-icon {
+      width: 16px;
+      height: 16px;
+      border: 2px solid #111;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      line-height: 1;
+      flex: 0 0 auto;
+    }
+
+    .pdf-page {
+      width: 210mm;
+      min-height: 297mm;
+      background: #fff;
+      color: #000;
+      padding: 8mm;
+      position: absolute;
+      left: -99999px;
+      top: 0;
+    }
+    .pdf-header {
+      border: 2px solid #111;
+      display: grid;
+      grid-template-columns: 1fr 1.15fr;
+      height: 24mm;
+      margin-bottom: 8mm;
+    }
+    .pdf-logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-right: 2px solid #111;
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: 3px;
+    }
+    .pdf-meta {
+      display: grid;
+      grid-template-rows: 1fr 1fr;
+    }
+    .pdf-meta div {
+      padding: 4mm;
+      border-bottom: 1px solid #111;
+      font-weight: 700;
+    }
+    .pdf-meta div:last-child { border-bottom: 0; }
+    .pdf-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7mm 8mm;
+    }
+    .pdf-grid .item-card { min-height: 77mm; }
+    .pdf-grid .item-content img { height: 43mm; }
+    .pdf-grid .row { min-height: 8mm; font-size: 13px; }
+    .pdf-grid .row .th, .pdf-grid .row .td { padding: 1.5mm 2mm; }
+    .empty { padding: 12px; color: #666; }
+    @media (max-width: 760px) {
+      .grid, .grid-4, #list { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>ฟอร์มบันทึกรายการตรวจ</h1>
+      <div class="grid">
+        <div>
+          <label for="project">ชื่อโครงการ</label>
+          <input id="project" type="text" placeholder="ระบุชื่อโครงการ">
+        </div>
+        <div>
+          <label for="houseNo">บ้านเลขที่</label>
+          <input id="houseNo" type="text" placeholder="ระบุบ้านเลขที่">
+        </div>
+      </div>
+
+      <div class="grid-4">
+        <div>
+          <label for="photo">1. แนบรูป</label>
+          <input id="photo" type="file" accept="image/*">
+        </div>
+        <div>
+          <label for="area">2. บริเวณ</label>
+          <input id="area" type="text" placeholder="เช่น ห้องโถง">
+        </div>
+        <div>
+          <label for="work">3. งาน</label>
+          <input id="work" type="text" placeholder="เช่น ผนัง">
+        </div>
+        <div>
+          <label for="detail">4. รายการ</label>
+          <input id="detail" type="text" placeholder="เช่น มุมผนังเบี้ยว ไม่ได้ฉาก">
+        </div>
+      </div>
+
+      <div class="btns">
+        <button onclick="addItem()">5. เพิ่มข้อมูล</button>
+        <button class="secondary" onclick="exportPDF()">Export PDF</button>
+        <button class="danger" onclick="clearAll()">ล้างทั้งหมด</button>
+      </div>
+      <div class="hint">PDF จัดหน้า A4 แนวตั้ง หน้าเดียวมี 6 บล็อค หากมีมากกว่า 6 รายการจะขึ้นหน้าใหม่อัตโนมัติ</div>
+    </div>
+
+    <div class="card">
+      <h1>รายการที่บันทึก</h1>
+      <div id="list"><div class="empty">ยังไม่มีข้อมูล</div></div>
+    </div>
+  </div>
+
+<script>
+  const items = [];
+  const $ = id => document.getElementById(id);
+
+  function readFileAsDataURL(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = e => resolve(e.target.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async function addItem() {
+    const file = $("photo").files[0];
+    const area = $("area").value.trim();
+    const work = $("work").value.trim();
+    const detail = $("detail").value.trim();
+
+    if (!file || !area || !work || !detail) {
+      alert("กรุณาแนบรูป และกรอก บริเวณ / งาน / รายการ ให้ครบ");
+      return;
+    }
+
+    const image = await readFileAsDataURL(file);
+    items.push({ image, area, work, detail });
+    $("photo").value = "";
+    $("area").value = "";
+    $("work").value = "";
+    $("detail").value = "";
+    renderList();
+  }
+
+  function itemHTML(item, index) {
+    return `
+      <div class="item-card">
+        <div class="item-no">${index + 1}</div>
+        <div class="item-content">
+          <img src="${item.image}" alt="รูปประกอบรายการ ${index + 1}">
+          <div class="row"><div class="th">บริเวณ :</div><div class="td">${escapeHTML(item.area)}</div></div>
+          <div class="row"><div class="th">งาน :</div><div class="td">${escapeHTML(item.work)}</div></div>
+          <div class="row"><div class="th">รายการ :</div><div class="td">${escapeHTML(item.detail)}</div></div>
+          <div class="row"><div class="th">สถานะ :</div><div class="td fix-line"><span class="check-icon">✓</span><span>ดำเนินการแก้ไขแล้ว</span></div></div>
+        </div>
+      </div>`;
+  }
+
+  function renderList() {
+    const list = $("list");
+    if (!items.length) {
+      list.innerHTML = '<div class="empty">ยังไม่มีข้อมูล</div>';
+      return;
+    }
+    list.innerHTML = items.map(itemHTML).join("");
+  }
+
+  function escapeHTML(text) {
+    return text.replace(/[&<>"']/g, m => ({
+      "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"
+    }[m]));
+  }
+
+  function chunk(arr, size) {
+    const out = [];
+    for (let i = 0; i < arr.length; i += size) out.push(arr.slice(i, i + size));
+    return out;
+  }
+
+  async function exportPDF() {
+    if (!items.length) {
+      alert("ยังไม่มีข้อมูลสำหรับ export");
+      return;
+    }
+
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF("p", "mm", "a4");
+    const project = $("project").value.trim() || "-";
+    const houseNo = $("houseNo").value.trim() || "-";
+    const pages = chunk(items, 6);
+
+    for (let p = 0; p < pages.length; p++) {
+      const page = document.createElement("div");
+      page.className = "pdf-page";
+      page.innerHTML = `
+        <div class="pdf-header">
+          <div class="pdf-logo">INSPECTOR</div>
+          <div class="pdf-meta">
+            <div>โครงการ : ${escapeHTML(project)}</div>
+            <div>บ้านเลขที่ : ${escapeHTML(houseNo)}</div>
+          </div>
+        </div>
+        <div class="pdf-grid">
+          ${pages[p].map((item, i) => itemHTML(item, p * 6 + i)).join("")}
+        </div>
+      `;
+      document.body.appendChild(page);
+
+      const canvas = await html2canvas(page, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: "#ffffff"
+      });
+      const img = canvas.toDataURL("image/jpeg", 0.95);
+      if (p > 0) pdf.addPage();
+      pdf.addImage(img, "JPEG", 0, 0, 210, 297);
+      document.body.removeChild(page);
+    }
+
+    const safeProject = project.replace(/[\\/:*?"<>|]/g, "_");
+    pdf.save(`inspection_${safeProject}.pdf`);
+  }
+
+  function clearAll() {
+    if (!confirm("ต้องการล้างรายการทั้งหมดใช่หรือไม่?")) return;
+    items.length = 0;
+    renderList();
+  }
+</script>
+</body>
+</html>
