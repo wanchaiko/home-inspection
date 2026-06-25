@@ -2,241 +2,313 @@
 <html lang="th">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ฟอร์มบันทึกรายการตรวจ</title>
-  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>ตรวจบ้านส่วนตัว</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
   <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: "Sarabun", system-ui, sans-serif;
-      background: #f5f6f8;
-      color: #111;
+    :root{
+      --bg:#f4f1ec;
+      --card:#fffaf3;
+      --ink:#171717;
+      --muted:#77706a;
+      --line:#e2d8cc;
+      --gold:#b88746;
+      --gold2:#d8b06d;
+      --dark:#1f1a17;
+      --danger:#b91c1c;
+      --radius:22px;
+      --shadow:0 18px 45px rgba(51,38,23,.13);
     }
-    .wrap {
-      max-width: 1100px;
-      margin: 24px auto;
-      padding: 0 16px 40px;
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;font-family:"Sarabun",system-ui,sans-serif;background:
+      radial-gradient(circle at top left,rgba(216,176,109,.28),transparent 32%),
+      linear-gradient(180deg,#fff8ec 0%,var(--bg) 45%,#efe8df 100%);
+      color:var(--ink);
     }
-    .card {
-      background: #fff;
-      border: 1px solid #ddd;
-      border-radius: 12px;
-      padding: 18px;
-      box-shadow: 0 4px 18px rgba(0,0,0,.06);
-      margin-bottom: 16px;
+    body{padding-bottom:154px}
+    .app{
+      max-width:520px;
+      margin:0 auto;
+      padding:18px 14px calc(32px + env(safe-area-inset-bottom));
     }
-    h1 { margin: 0 0 14px; font-size: 24px; }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
+    .hero{
+      position:sticky;
+      top:0;
+      z-index:5;
+      margin:0 -14px 14px;
+      padding:14px 14px 12px;
+      background:rgba(255,248,236,.88);
+      backdrop-filter:blur(18px);
+      border-bottom:1px solid rgba(226,216,204,.7);
     }
-    .grid-4 {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 12px;
-      margin-top: 12px;
+    .hero-card{
+      border-radius:26px;
+      padding:18px;
+      background:linear-gradient(135deg,#201916,#3a2a1c 58%,#8d6737);
+      color:#fff;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      position:relative;
     }
-    label { display: block; font-weight: 600; margin-bottom: 6px; }
-    input[type="text"], input[type="file"] {
-      width: 100%;
-      border: 1px solid #cfd4dc;
-      border-radius: 8px;
-      padding: 10px 12px;
-      font: inherit;
-      background: #fff;
+    .hero-card:after{
+      content:"";
+      position:absolute;
+      width:180px;height:180px;border-radius:50%;
+      right:-70px;top:-75px;
+      background:rgba(216,176,109,.24);
     }
-    .btns {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 16px;
+    .eyebrow{font-size:12px;letter-spacing:.08em;opacity:.78;font-weight:700}
+    h1{margin:4px 0 8px;font-size:27px;line-height:1.12}
+    .summary{display:flex;gap:10px;align-items:center;color:#f7ead7;font-size:14px;flex-wrap:wrap}
+    .pill{
+      display:inline-flex;gap:6px;align-items:center;
+      padding:7px 10px;border-radius:999px;background:rgba(255,255,255,.12);
+      border:1px solid rgba(255,255,255,.18);font-weight:700
     }
-    button {
-      border: 0;
-      border-radius: 8px;
-      padding: 10px 16px;
-      font: inherit;
-      font-weight: 700;
-      cursor: pointer;
-      background: #111827;
-      color: #fff;
+    .panel{
+      background:rgba(255,250,243,.92);
+      border:1px solid rgba(226,216,204,.92);
+      border-radius:var(--radius);
+      padding:16px;
+      box-shadow:var(--shadow);
+      margin-bottom:14px;
     }
-    button.secondary { background: #2563eb; }
-    button.danger { background: #dc2626; }
-    .hint { color: #666; font-size: 14px; margin-top: 8px; }
+    .section-title{font-size:17px;font-weight:800;margin:0 0 12px;display:flex;align-items:center;gap:8px}
+    .field{margin-bottom:12px}
+    label{display:block;font-size:13px;font-weight:800;color:#473c31;margin:0 0 7px}
+    input[type="text"]{
+      width:100%;height:48px;border:1px solid var(--line);
+      border-radius:15px;background:#fff;padding:0 14px;font:inherit;
+      outline:none;box-shadow:0 4px 12px rgba(55,42,28,.04);
+    }
+    input[type="text"]:focus{border-color:var(--gold);box-shadow:0 0 0 4px rgba(184,135,70,.14)}
+    .photo-box{
+      border:1.5px dashed #c9ab7b;
+      background:linear-gradient(180deg,#fffdf9,#fff6e6);
+      border-radius:18px;
+      padding:14px;
+      text-align:center;
+      position:relative;
+      overflow:hidden;
+    }
+    .photo-box input{
+      position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;
+    }
+    .camera-icon{
+      width:48px;height:48px;border-radius:16px;margin:0 auto 8px;
+      display:grid;place-items:center;
+      background:linear-gradient(135deg,var(--gold),var(--gold2));
+      color:#fff;font-size:24px;box-shadow:0 12px 22px rgba(184,135,70,.25)
+    }
+    .photo-main{font-weight:800;font-size:16px}
+    .photo-sub{font-size:13px;color:var(--muted);margin-top:2px}
+    .preview{
+      margin-top:10px;border-radius:16px;overflow:hidden;display:none;border:1px solid var(--line)
+    }
+    .preview img{width:100%;max-height:230px;object-fit:cover;display:block}
+    .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .actions{display:grid;grid-template-columns:1fr;gap:10px;margin-top:10px}
+    button{
+      border:0;border-radius:16px;height:50px;padding:0 16px;
+      font:inherit;font-weight:800;cursor:pointer;
+      display:flex;align-items:center;justify-content:center;gap:8px;
+      -webkit-tap-highlight-color:transparent;
+    }
+    button:disabled{opacity:.55;cursor:not-allowed}
+    .primary{
+      color:#fff;background:linear-gradient(135deg,#1f1a17,#3b2a20);
+      box-shadow:0 14px 24px rgba(31,26,23,.20);
+    }
+    .export{
+      color:#21150a;background:linear-gradient(135deg,#e6c27f,#b88746);
+      box-shadow:0 14px 24px rgba(184,135,70,.23);
+    }
+    .share{
+      color:#fff;background:linear-gradient(135deg,#06c755,#079d45);
+      box-shadow:0 14px 24px rgba(6,199,85,.20);
+    }
+    .ghost{background:#fff;border:1px solid var(--line);color:#3b3129}
+    .danger{background:#fff3f3;color:var(--danger);border:1px solid #f0caca}
+    .note{
+      margin-top:10px;font-size:13px;color:var(--muted);
+      background:#fffdf8;border:1px solid var(--line);padding:10px;border-radius:14px;
+    }
+    .list{display:grid;gap:12px}
+    .empty{
+      text-align:center;color:var(--muted);padding:26px 8px;border:1px dashed var(--line);
+      border-radius:18px;background:#fffdf8
+    }
+    .ticket{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:20px;
+      box-shadow:0 12px 30px rgba(51,38,23,.08);
+      overflow:hidden;
+    }
+    .ticket-img{height:210px;background:#eee;position:relative}
+    .ticket-img img{width:100%;height:100%;object-fit:cover;display:block}
+    .badge{
+      position:absolute;left:12px;top:12px;background:rgba(31,26,23,.88);
+      color:#fff;border-radius:999px;padding:6px 11px;font-weight:800;font-size:13px
+    }
+    .ticket-body{padding:14px}
+    .meta{display:grid;gap:8px}
+    .meta-row{display:grid;grid-template-columns:74px 1fr;gap:8px;font-size:14px}
+    .meta-row b{color:#6b5740}
+    .status{
+      margin-top:12px;padding:10px 12px;border-radius:14px;
+      background:#fff8ea;border:1px solid #ecd6a9;
+      display:flex;align-items:center;gap:9px;font-weight:800;color:#4b3720
+    }
+    .box-icon{
+      width:18px;height:18px;border:2px solid #1f1a17;border-radius:4px;display:inline-block;background:#fff
+    }
+    .item-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+    .bottom-bar{
+      position:fixed;left:0;right:0;bottom:0;z-index:10;
+      padding:10px 14px calc(10px + env(safe-area-inset-bottom));
+      background:rgba(255,248,236,.92);
+      backdrop-filter:blur(18px);
+      border-top:1px solid rgba(226,216,204,.85);
+    }
+    .bottom-inner{max-width:520px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .bottom-inner .share{grid-column:1 / -1}
+    .small{height:46px}
+    #busy{
+      position:fixed;inset:0;background:rgba(31,26,23,.55);
+      z-index:99;display:none;align-items:center;justify-content:center;
+      color:#fff;font-weight:800;text-align:center;padding:24px;
+      backdrop-filter:blur(8px);
+    }
+    .busy-card{background:rgba(31,26,23,.9);padding:22px;border-radius:20px;max-width:320px}
 
-    #list {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 14px;
+    .pdf-page{
+      width:210mm;min-height:297mm;background:#fff;color:#000;padding:8mm;
+      position:absolute;left:-99999px;top:0;font-family:"Sarabun",sans-serif;
     }
-    .item-card {
-      border: 1px solid #222;
-      background: #fff;
-      display: grid;
-      grid-template-columns: 48px 1fr;
-      min-height: 260px;
+    .pdf-header{
+      border:1.5px solid #111;display:grid;grid-template-columns:1fr 1.2fr;
+      height:24mm;margin-bottom:7mm;
     }
-    .item-no {
-      border-right: 1px solid #222;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-    }
-    .item-content img {
-      width: 100%;
-      height: 155px;
-      object-fit: cover;
-      display: block;
-      border-bottom: 1px solid #222;
-      background: #eee;
-    }
-    .row {
-      display: grid;
-      grid-template-columns: 92px 1fr;
-      border-bottom: 1px solid #222;
-      min-height: 32px;
-      align-items: stretch;
-    }
-    .row:last-child { border-bottom: 0; }
-    .row .th {
-      border-right: 1px solid #222;
-      padding: 5px 8px;
-      font-weight: 700;
-    }
-    .row .td {
-      padding: 5px 8px;
-      text-align: center;
-      font-weight: 600;
-    }
-    .fix-line {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      justify-content: center;
-    }
-    .check-icon {
-      width: 16px;
-      height: 16px;
-      border: 2px solid #111;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 12px;
-      line-height: 1;
-      flex: 0 0 auto;
-    }
-
-    .pdf-page {
-      width: 210mm;
-      min-height: 297mm;
-      background: #fff;
-      color: #000;
-      padding: 8mm;
-      position: absolute;
-      left: -99999px;
-      top: 0;
-    }
-    .pdf-header {
-      border: 2px solid #111;
-      display: grid;
-      grid-template-columns: 1fr 1.15fr;
-      height: 24mm;
-      margin-bottom: 8mm;
-    }
-    .pdf-logo {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-right: 2px solid #111;
-      font-size: 18px;
-      font-weight: 800;
-      letter-spacing: 3px;
-    }
-    .pdf-meta {
-      display: grid;
-      grid-template-rows: 1fr 1fr;
-    }
-    .pdf-meta div {
-      padding: 4mm;
-      border-bottom: 1px solid #111;
-      font-weight: 700;
-    }
-    .pdf-meta div:last-child { border-bottom: 0; }
-    .pdf-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 7mm 8mm;
-    }
-    .pdf-grid .item-card { min-height: 77mm; }
-    .pdf-grid .item-content img { height: 43mm; }
-    .pdf-grid .row { min-height: 8mm; font-size: 13px; }
-    .pdf-grid .row .th, .pdf-grid .row .td { padding: 1.5mm 2mm; }
-    .empty { padding: 12px; color: #666; }
-    @media (max-width: 760px) {
-      .grid, .grid-4, #list { grid-template-columns: 1fr; }
-    }
+    .pdf-logo{display:flex;align-items:center;justify-content:center;border-right:1.5px solid #111;font-size:18px;font-weight:900;letter-spacing:2px}
+    .pdf-meta{display:grid;grid-template-rows:1fr 1fr}
+    .pdf-meta div{padding:4mm;border-bottom:1px solid #111;font-weight:800}
+    .pdf-meta div:last-child{border-bottom:0}
+    .pdf-grid{display:grid;grid-template-columns:1fr 1fr;gap:6mm 7mm}
+    .pdf-block{border:1.2px solid #111;display:grid;grid-template-columns:12mm 1fr;min-height:78mm}
+    .pdf-no{border-right:1.2px solid #111;display:flex;align-items:center;justify-content:center;font-weight:800}
+    .pdf-photo{height:43mm;border-bottom:1.2px solid #111;background:#eee}
+    .pdf-photo img{width:100%;height:100%;object-fit:cover;display:block}
+    .pdf-row{display:grid;grid-template-columns:25mm 1fr;min-height:8mm;border-bottom:1.2px solid #111;font-size:12px}
+    .pdf-row:last-child{border-bottom:0}
+    .pdf-th{border-right:1.2px solid #111;padding:1.5mm 2mm;font-weight:800}
+    .pdf-td{padding:1.5mm 2mm;text-align:center;font-weight:700}
+    .pdf-status{display:flex;justify-content:center;align-items:center;gap:2mm}
+    .pdf-checkbox{width:4mm;height:4mm;border:1.2px solid #111;display:inline-block;background:#fff}
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="card">
-      <h1>ฟอร์มบันทึกรายการตรวจ</h1>
-      <div class="grid">
-        <div>
-          <label for="project">ชื่อโครงการ</label>
-          <input id="project" type="text" placeholder="ระบุชื่อโครงการ">
+  <div id="busy"><div class="busy-card">กำลังสร้าง PDF...<br>กรุณารอสักครู่</div></div>
+
+  <div class="app">
+    <header class="hero">
+      <div class="hero-card">
+        <div class="eyebrow">PERSONAL HOME INSPECTION</div>
+        <h1>ตรวจบ้านของฉัน</h1>
+        <div class="summary">
+          <span class="pill">📋 <span id="countText">0 รายการ</span></span>
+          <span class="pill">📱 iPhone Friendly</span>
         </div>
-        <div>
-          <label for="houseNo">บ้านเลขที่</label>
-          <input id="houseNo" type="text" placeholder="ระบุบ้านเลขที่">
+      </div>
+    </header>
+
+    <section class="panel">
+      <div class="section-title">🏠 ข้อมูลบ้าน</div>
+      <div class="field">
+        <label for="project">ชื่อโครงการ</label>
+        <input id="project" type="text" placeholder="เช่น โครงการบ้านสุขใจ">
+      </div>
+      <div class="field">
+        <label for="houseNo">บ้านเลขที่</label>
+        <input id="houseNo" type="text" placeholder="เช่น 99/99">
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="section-title">➕ เพิ่มรายการตรวจ</div>
+      <div class="field">
+        <label>รูปประกอบ</label>
+        <div class="photo-box">
+          <input id="photo" type="file" accept="image/*" onchange="showPreview(event)">
+          <div class="camera-icon">📷</div>
+          <div class="photo-main">แตะเพื่อถ่ายรูป หรืออัปโหลด</div>
+          <div class="photo-sub">บน iPhone เลือก ถ่ายรูป / คลังรูปภาพ ได้</div>
+        </div>
+        <div class="preview" id="preview"><img id="previewImg" alt="preview"></div>
+      </div>
+
+      <div class="two">
+        <div class="field">
+          <label for="area">บริเวณ</label>
+          <input id="area" type="text" placeholder="ห้องโถง">
+        </div>
+        <div class="field">
+          <label for="work">งาน</label>
+          <input id="work" type="text" placeholder="ผนัง">
         </div>
       </div>
 
-      <div class="grid-4">
-        <div>
-          <label for="photo">1. แนบรูป</label>
-          <input id="photo" type="file" accept="image/*">
-        </div>
-        <div>
-          <label for="area">2. บริเวณ</label>
-          <input id="area" type="text" placeholder="เช่น ห้องโถง">
-        </div>
-        <div>
-          <label for="work">3. งาน</label>
-          <input id="work" type="text" placeholder="เช่น ผนัง">
-        </div>
-        <div>
-          <label for="detail">4. รายการ</label>
-          <input id="detail" type="text" placeholder="เช่น มุมผนังเบี้ยว ไม่ได้ฉาก">
-        </div>
+      <div class="field">
+        <label for="detail">รายการที่พบ</label>
+        <input id="detail" type="text" placeholder="เช่น มุมผนังเบี้ยว ไม่ได้ฉาก">
       </div>
 
-      <div class="btns">
-        <button onclick="addItem()">5. เพิ่มข้อมูล</button>
-        <button class="secondary" onclick="exportPDF()">Export PDF</button>
-        <button class="danger" onclick="clearAll()">ล้างทั้งหมด</button>
+      <div class="actions">
+        <button class="primary" onclick="addItem()">เพิ่มรายการ</button>
       </div>
-      <div class="hint">PDF จัดหน้า A4 แนวตั้ง หน้าเดียวมี 6 บล็อค หากมีมากกว่า 6 รายการจะขึ้นหน้าใหม่อัตโนมัติ</div>
-    </div>
+      <div class="note">หมายเหตุ: สถานะ “ดำเนินการแก้ไขแล้ว” จะแสดงเป็นช่องว่าง ไม่ติ๊กถูก ทั้งบนหน้าจอและ PDF</div>
+    </section>
 
-    <div class="card">
-      <h1>รายการที่บันทึก</h1>
-      <div id="list"><div class="empty">ยังไม่มีข้อมูล</div></div>
+    <section class="panel">
+      <div class="section-title">🧾 รายการทั้งหมด</div>
+      <div id="list" class="list"><div class="empty">ยังไม่มีรายการตรวจ</div></div>
+    </section>
+  </div>
+
+  <div class="bottom-bar">
+    <div class="bottom-inner">
+      <button class="export small" onclick="exportPDF()">Export PDF</button>
+      <button class="danger small" onclick="clearAll()">ล้างทั้งหมด</button>
+      <button class="share small" onclick="sharePDF()">แชร์ PDF ไป LINE</button>
     </div>
   </div>
 
 <script>
-  const items = [];
+  const items = JSON.parse(localStorage.getItem("homeInspectionItems") || "[]");
+  let editIndex = -1;
+
   const $ = id => document.getElementById(id);
 
-  function readFileAsDataURL(file) {
-    return new Promise((resolve, reject) => {
+  $("project").value = localStorage.getItem("homeInspectionProject") || "";
+  $("houseNo").value = localStorage.getItem("homeInspectionHouseNo") || "";
+
+  ["project","houseNo"].forEach(id => {
+    $(id).addEventListener("input", () => {
+      localStorage.setItem("homeInspectionProject", $("project").value);
+      localStorage.setItem("homeInspectionHouseNo", $("houseNo").value);
+    });
+  });
+
+  function save(){ localStorage.setItem("homeInspectionItems", JSON.stringify(items)); }
+
+  function readFileAsDataURL(file){
+    return new Promise((resolve,reject)=>{
       const reader = new FileReader();
       reader.onload = e => resolve(e.target.result);
       reader.onerror = reject;
@@ -244,110 +316,251 @@
     });
   }
 
-  async function addItem() {
+  async function showPreview(event){
+    const file = event.target.files[0];
+    if(!file) return;
+    const image = await readFileAsDataURL(file);
+    $("previewImg").src = image;
+    $("preview").style.display = "block";
+  }
+
+  async function addItem(){
     const file = $("photo").files[0];
     const area = $("area").value.trim();
     const work = $("work").value.trim();
     const detail = $("detail").value.trim();
 
-    if (!file || !area || !work || !detail) {
-      alert("กรุณาแนบรูป และกรอก บริเวณ / งาน / รายการ ให้ครบ");
+    if(!area || !work || !detail){
+      alert("กรุณากรอก บริเวณ / งาน / รายการ ให้ครบ");
       return;
     }
 
-    const image = await readFileAsDataURL(file);
-    items.push({ image, area, work, detail });
+    let image = $("previewImg").src || "";
+    if(file) image = await readFileAsDataURL(file);
+
+    if(editIndex < 0 && !image){
+      alert("กรุณาแนบรูปหรือถ่ายรูปก่อนเพิ่มรายการ");
+      return;
+    }
+
+    const data = { image, area, work, detail };
+    if(editIndex >= 0){
+      if(!image) data.image = items[editIndex].image;
+      items[editIndex] = data;
+      editIndex = -1;
+      document.querySelector(".primary").textContent = "เพิ่มรายการ";
+    }else{
+      items.push(data);
+    }
+
+    save();
+    resetForm();
+    renderList();
+  }
+
+  function resetForm(){
     $("photo").value = "";
     $("area").value = "";
     $("work").value = "";
     $("detail").value = "";
+    $("previewImg").removeAttribute("src");
+    $("preview").style.display = "none";
+  }
+
+  function renderList(){
+    $("countText").textContent = `${items.length} รายการ`;
+    const list = $("list");
+    if(!items.length){
+      list.innerHTML = '<div class="empty">ยังไม่มีรายการตรวจ</div>';
+      return;
+    }
+    list.innerHTML = items.map((item,i)=>`
+      <div class="ticket">
+        <div class="ticket-img">
+          <img src="${item.image}" alt="รูป ${i+1}">
+          <div class="badge">#${i+1}</div>
+        </div>
+        <div class="ticket-body">
+          <div class="meta">
+            <div class="meta-row"><b>บริเวณ</b><span>${escapeHTML(item.area)}</span></div>
+            <div class="meta-row"><b>งาน</b><span>${escapeHTML(item.work)}</span></div>
+            <div class="meta-row"><b>รายการ</b><span>${escapeHTML(item.detail)}</span></div>
+          </div>
+          <div class="status"><span class="box-icon"></span><span>ดำเนินการแก้ไขแล้ว</span></div>
+          <div class="item-actions">
+            <button class="ghost" onclick="editItem(${i})">แก้ไข</button>
+            <button class="danger" onclick="deleteItem(${i})">ลบ</button>
+          </div>
+        </div>
+      </div>
+    `).join("");
+  }
+
+  function editItem(i){
+    const item = items[i];
+    editIndex = i;
+    $("area").value = item.area;
+    $("work").value = item.work;
+    $("detail").value = item.detail;
+    $("previewImg").src = item.image;
+    $("preview").style.display = "block";
+    document.querySelector(".primary").textContent = "บันทึกการแก้ไข";
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+
+  function deleteItem(i){
+    if(!confirm("ลบรายการนี้ใช่หรือไม่?")) return;
+    items.splice(i,1);
+    save();
     renderList();
   }
 
-  function itemHTML(item, index) {
+  function clearAll(){
+    if(!confirm("ต้องการล้างข้อมูลทั้งหมดใช่หรือไม่?")) return;
+    items.length = 0;
+    save();
+    renderList();
+  }
+
+  function escapeHTML(text){
+    return String(text).replace(/[&<>"']/g, m => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+    }[m]));
+  }
+
+  function chunk(arr,size){
+    const out=[];
+    for(let i=0;i<arr.length;i+=size) out.push(arr.slice(i,i+size));
+    return out;
+  }
+
+  function pdfBlock(item,index){
     return `
-      <div class="item-card">
-        <div class="item-no">${index + 1}</div>
-        <div class="item-content">
-          <img src="${item.image}" alt="รูปประกอบรายการ ${index + 1}">
-          <div class="row"><div class="th">บริเวณ :</div><div class="td">${escapeHTML(item.area)}</div></div>
-          <div class="row"><div class="th">งาน :</div><div class="td">${escapeHTML(item.work)}</div></div>
-          <div class="row"><div class="th">รายการ :</div><div class="td">${escapeHTML(item.detail)}</div></div>
-          <div class="row"><div class="th">สถานะ :</div><div class="td fix-line"><span class="check-icon">✓</span><span>ดำเนินการแก้ไขแล้ว</span></div></div>
+      <div class="pdf-block">
+        <div class="pdf-no">${index+1}</div>
+        <div>
+          <div class="pdf-photo"><img src="${item.image}"></div>
+          <div class="pdf-row"><div class="pdf-th">บริเวณ :</div><div class="pdf-td">${escapeHTML(item.area)}</div></div>
+          <div class="pdf-row"><div class="pdf-th">งาน :</div><div class="pdf-td">${escapeHTML(item.work)}</div></div>
+          <div class="pdf-row"><div class="pdf-th">รายการ :</div><div class="pdf-td">${escapeHTML(item.detail)}</div></div>
+          <div class="pdf-row"><div class="pdf-th">สถานะ :</div><div class="pdf-td pdf-status"><span class="pdf-checkbox"></span><span>ดำเนินการแก้ไขแล้ว</span></div></div>
         </div>
       </div>`;
   }
 
-  function renderList() {
-    const list = $("list");
-    if (!items.length) {
-      list.innerHTML = '<div class="empty">ยังไม่มีข้อมูล</div>';
-      return;
-    }
-    list.innerHTML = items.map(itemHTML).join("");
-  }
-
-  function escapeHTML(text) {
-    return text.replace(/[&<>"']/g, m => ({
-      "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"
-    }[m]));
-  }
-
-  function chunk(arr, size) {
-    const out = [];
-    for (let i = 0; i < arr.length; i += size) out.push(arr.slice(i, i + size));
-    return out;
-  }
-
-  async function exportPDF() {
-    if (!items.length) {
-      alert("ยังไม่มีข้อมูลสำหรับ export");
-      return;
+  async function makePDFBlob(){
+    if(!items.length){
+      alert("ยังไม่มีข้อมูลสำหรับสร้าง PDF");
+      return null;
     }
 
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF("p", "mm", "a4");
-    const project = $("project").value.trim() || "-";
-    const houseNo = $("houseNo").value.trim() || "-";
-    const pages = chunk(items, 6);
+    $("busy").style.display = "flex";
 
-    for (let p = 0; p < pages.length; p++) {
-      const page = document.createElement("div");
-      page.className = "pdf-page";
-      page.innerHTML = `
-        <div class="pdf-header">
-          <div class="pdf-logo">INSPECTOR</div>
-          <div class="pdf-meta">
-            <div>โครงการ : ${escapeHTML(project)}</div>
-            <div>บ้านเลขที่ : ${escapeHTML(houseNo)}</div>
+    try{
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF("p","mm","a4");
+      const project = $("project").value.trim() || "-";
+      const houseNo = $("houseNo").value.trim() || "-";
+      const pages = chunk(items,6);
+
+      for(let p=0;p<pages.length;p++){
+        const page = document.createElement("div");
+        page.className = "pdf-page";
+        page.innerHTML = `
+          <div class="pdf-header">
+            <div class="pdf-logo">HOME INSPECTION</div>
+            <div class="pdf-meta">
+              <div>โครงการ : ${escapeHTML(project)}</div>
+              <div>บ้านเลขที่ : ${escapeHTML(houseNo)}</div>
+            </div>
           </div>
-        </div>
-        <div class="pdf-grid">
-          ${pages[p].map((item, i) => itemHTML(item, p * 6 + i)).join("")}
-        </div>
-      `;
-      document.body.appendChild(page);
+          <div class="pdf-grid">
+            ${pages[p].map((item,i)=>pdfBlock(item,p*6+i)).join("")}
+          </div>`;
+        document.body.appendChild(page);
 
-      const canvas = await html2canvas(page, {
-        scale: 2,
-        useCORS: true,
-        backgroundColor: "#ffffff"
+        await new Promise(resolve => setTimeout(resolve, 80));
+
+        const canvas = await html2canvas(page,{
+          scale:1.8,
+          useCORS:true,
+          allowTaint:true,
+          backgroundColor:"#ffffff",
+          logging:false,
+          windowWidth:page.scrollWidth,
+          windowHeight:page.scrollHeight
+        });
+
+        const img = canvas.toDataURL("image/jpeg",0.92);
+        if(p>0) pdf.addPage();
+        pdf.addImage(img,"JPEG",0,0,210,297);
+        document.body.removeChild(page);
+      }
+
+      return pdf.output("blob");
+    }catch(err){
+      console.error(err);
+      alert("สร้าง PDF ไม่สำเร็จ กรุณาลองลดจำนวนรูป หรือใช้ Safari เวอร์ชันล่าสุด");
+      return null;
+    }finally{
+      $("busy").style.display = "none";
+    }
+  }
+
+  function safeFileName(){
+    const project = $("project").value.trim() || "home-inspection";
+    return project.replace(/[\\/:*?"<>|]/g,"_") + ".pdf";
+  }
+
+  async function exportPDF(){
+    const blob = await makePDFBlob();
+    if(!blob) return;
+
+    const fileName = safeFileName();
+
+    const file = new File([blob], fileName, { type:"application/pdf" });
+
+    if(navigator.canShare && navigator.canShare({ files:[file] })){
+      await navigator.share({
+        files:[file],
+        title:"Home Inspection PDF",
+        text:"รายงานตรวจบ้าน"
       });
-      const img = canvas.toDataURL("image/jpeg", 0.95);
-      if (p > 0) pdf.addPage();
-      pdf.addImage(img, "JPEG", 0, 0, 210, 297);
-      document.body.removeChild(page);
+      return;
     }
 
-    const safeProject = project.replace(/[\\/:*?"<>|]/g, "_");
-    pdf.save(`inspection_${safeProject}.pdf`);
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+
+    setTimeout(()=>URL.revokeObjectURL(url), 30000);
   }
 
-  function clearAll() {
-    if (!confirm("ต้องการล้างรายการทั้งหมดใช่หรือไม่?")) return;
-    items.length = 0;
-    renderList();
+  async function sharePDF(){
+    const blob = await makePDFBlob();
+    if(!blob) return;
+
+    const file = new File([blob], safeFileName(), { type:"application/pdf" });
+
+    if(navigator.canShare && navigator.canShare({ files:[file] })){
+      await navigator.share({
+        files:[file],
+        title:"Home Inspection PDF",
+        text:"รายงานตรวจบ้าน"
+      });
+    }else{
+      alert("เครื่องนี้ไม่รองรับการแชร์ไฟล์โดยตรง ให้กด Export PDF แล้วเลือกเปิด/แชร์จากไฟล์แทน");
+      const url = URL.createObjectURL(blob);
+      window.open(url, "_blank");
+      setTimeout(()=>URL.revokeObjectURL(url), 30000);
+    }
   }
+
+  renderList();
 </script>
 </body>
 </html>
